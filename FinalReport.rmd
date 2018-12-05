@@ -1,6 +1,6 @@
 ---
 title: "Abacavirinol"
-author: "Put your name here!"
+author: "Jonathan Teo"
 date: "put the date here"
 output: html_document
 ---
@@ -9,37 +9,238 @@ output: html_document
 require(tidyverse)
 require(tigerstats)
 abac <-read.csv(file="abacavirinol.csv",header=TRUE)
+Female <- filter(abac,sex=="F")
+Male <- filter(abac,sex=="M")
+Druggies <- filter(abac,Ivdrug=="M")
+DrugUse <- filter(abac,Ivdrug=="user")
+LBGT <- filter(abac,LBGT=="yes")
+
+```
+example to get just LGBT     
+
+
+```{r}
+lgbtGrp <- filter(abac,LBGT == "Yes")
+```
+
+```{r}
+lgbtGrp <- filter(abac,LBGT == "no")
+```
+
+
+```{r}
+treatmentGrp <- filter(abac,treatment == "drug")
+```
+
+```{r}
+treatmentGrp <- filter(abac,treatment == "placebo")
+```
+
+```{r}
+sexGrp <- filter(abac,sex == "F")
+```
+
+```{r}
+sexGrp <- filter(abac,sex == "M")
+```
+
+```{r}
+infectedGrp <- filter(abac,infected == "aids")
+```
+
+```{r}
+infectedGrp <- filter(abac,infected == "none")
+```
+
+```{r}
+IvdrugGrp <- filter(abac,Ivdrug == "free")
+```
+
+```{r}
+IvdrugGrp <- filter(abac,Ivdrug == "user")
 ```
 
 # Introduction
 
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
 
-A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. Finish this!
+A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. Finish this!    
 
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
 
+We are going to be using the barchartGC, numerical results using colPerc, rowPerc, inferential results using chisqtestGC, and fisher.test, as we test it on the the female participants, male, IV drugs, LBGT and all participants. I will explain the results from each individual R block.          
+
+
 #Results
 
 <!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
-
+There are three types of results in this section for us to observe; Graphical, Numerical, and Inferential.       
+  
 ## Descriptive Results
 
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+ 
+All Participants       
+```{r}
+results <- xtabs(~infected+treatment,data=abac)
+barchartGC(results,type = "percent")
+```
+In this chart these are the results of the treatments and the percents of all participants who were infected with aid and the others that werent affected. As you can see that the participants infected have taken the placebo than those who took the drug. In the results you can notice a twenty percent difference between the different types of treatments. Most of them took the placebo and little bit of them took the drug. People who took the drug had a less chance of getting aids compare to people who only took the placebo, they have a higher chance of getting aids.          
+
+Drug user       
+```{r}
+drugusersresults <- xtabs(~infected+treatment, data= DrugUse)
+barchartGC(drugusersresults, type = "percent")
+```
+In this chart these are the results of the treatments used and the percentage of the IV drug users who were infected and those who werent infected by aids. You can see in the chart that more IV drug users infected have taken the placebo than those who took the drug. There is also a sixty percent difference between the different types of treatments.        
+
+
+Female      
+```{r}
+femaleresults <- xtabs(~infected+treatment, data= Female)
+barchartGC(femaleresults, type = "percent")
+```
+In this chart these are the results of the treatments used and the percentages of the female participants who were infected and those who werent infected by aids. It shows that the females who were infected had taken the medication compare to those who too the placebo. There is a twenty percent difference between the treatments of placebo and aids.          
+   
+
+
+LBGT
+```{r}
+lbgtresults <- xtabs(~infected+treatment, data= LBGT)
+barchartGC(lbgtresults, type = "percent")
+```
+In this chart these are the results of the treatments used and the percentages of the LBGT community/participants who were infected and those who werent. YOu can see in the chart that The more lbgt community infected took the drug than the placebo. Theres a twenty percent difference in people taking the placebo and the drug.     
+
+
+
+Male    
+```{r}
+maleresults <- xtabs(~infected+treatment, data= Male)
+barchartGC(maleresults, type = "percent")
+```
+In this chart these are the results of the treatments used and the percentages of the males who were infected with aids by taking placebo or the drug. As you can see mostly all the men who took the placebo got infected with aids than those who didnt take the placebo and took the drug instead. Theres about a fourty percent difference in males who took placebo and those who took the drug.      
+
+
 
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+All Participants      
+```{r}
+colPerc(results)
+rowPerc(results)
+```
+In these results you can see that five percent of the people who took the placebo were infected while four percent who took the drug were infected. The medication was a little effective according to colPerc. The medication of rowPerc you can see that fourty percent took the drug got infected and fifty nine percent who took the placebo got infected which means the medication was effective.       
+
+Drug User     
+```{r}
+colPerc(drugusersresults)
+rowPerc(drugusersresults)
+```
+In these results you can see that seven percent of IV drug users who took the placebo were infected and the three percent of IV drug users who took the medication were infected. The medication was a little better according to colperc. Now the rowPerc, the twenty five percent that were affected took the medication and seventy five percent that got affected took the placebo, which means that the medication was very effective.           
+
+Females    
+```{r}
+colPerc(femaleresults)
+rowPerc(femaleresults)
+```
+In these results you can see that 3.96 sum it up to 4 percent. So four percent of the women that took the drug were infected and the 2 percent that took the placebo were infected. As you can see the medication wasnt very effection to colPerc. Now rowPerc data you can see that 59 percent that took the drug were affected and the other fourty percent were affected when they took the placebo which also means the medication wasnt effective either.     
+
+
+LBGT     
+```{r}
+colPerc(lbgtresults)
+rowPerc(lbgtresults)
+```
+In these results you can see the six percent of the LBGT took the drug and got infected. On the other hand three percent that took the placebo got infected. The medication wasnt very useful to colPerc. Now the roPerc chart, it shows that sixty eight percent took the drug and got affected while the other thirty one percent were affected by the placebo that they took. This also shows that the medication wasnt effective.        
+
+
+Male     
+```{r}
+colPerc(maleresults)
+rowPerc(maleresults)
+```
+In these results you can see colPer has four percent of the males that took the drug got infected. The other eight percent of males took the placebo and got infected. The medication was a little/slightly effective. Now with the rowPer results you can see that thirty percent that got affected took the drug and the other seventy percent took the placebo and got affected. The medication is effective.      
+
+
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+The null hypothesis is that there is no significant difference between specified populations, any observed difference is being due to sampling or experimental error.
+the large large p-value > 0.05 shows that there are weak evidence against the null hypothesis, so you fail to reject the null hypothesis. p -values very close to the cutoff 0.05 are considered to be marginal which could go either way.    
+
+All Participants      
+```{r}
+chisqtestGC(results, graph = TRUE)
+```
+
+```{r}
+fisher.test(results)
+```
+We reject the null hypothesis, P-value is below 0.05. It is .01634 which is pretty low and lower than the P-value of the ChiSquared test, so I can see why the two seperate tests are important to run, they produce different P-values. 
+From the data we collected from Fisher it shows us that by taking the drug you have a less likely chance of getting aids.      
+  
+Drug User       
+```{r}
+chisqtestGC(drugusersresults, graph = TRUE)
+```
+
+```{r}
+fisher.test(drugusersresults)
+```
+We reject the null hypothesis as the p value is below .05, The results were .01929 which is also pretty low and lower than the p value of the Chisquared test. They both produce different p values.      
+
+Female    
+```{r}
+chisqtestGC(femaleresults, graph = TRUE)
+```
+
+```{r}
+fisher.test(femaleresults)
+```
+We reject the null hypothesis as the p value is below 0.05. In the results you can see that 0.04911 is very low which makes it lower than the p value of the Chisquared test, which we would have failed to reject. So I reject the null hypothesis as the p values are both close to .05.     
+
+LBGT    
+```{r}
+chisqtestGC(lbgtresults, graph = TRUE)
+```
+
+```{r}
+fisher.test(lbgtresults)
+```
+We fail to reject the null hypothesis as the p value is above .05, as it is above and the number is .05698. But it is lower than the p value of the Chisquared test. The results I got was above the 0.05 so we failed to reject the null hypothesis as it was higher which was .05698.      
 
 
-# Discussion and Conclusion
+Male
+```{r}
+chisqtestGC(maleresults, graph = TRUE)
+```
+
+```{r}
+fisher.test(maleresults)
+```
+With these results we reject the null hypothesis as the p value is lower than .05. It is .000004 which is really low and little higher than the p value of the chisquared test. We can both see the two different tests are important to test because they produce different p values, but they are still very low numbers.       
+        
+# Discussion and Conclusion  
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+         
+All Participants        
+You can see from all the results that the drug was very affective and also the null hypothesis is rejected. The participants who took the placebo got aids compare to those who had not taken the drug. Which means that the medication could help abunch of people abd the prevent people from catching aids or spreading.
+      
+Drug Users       
+With all the results you can see that the drug was effective with the IV drug users and we also reject the null hypothesis. More IV drugs users got aids when they took the placebo compare to those who didnt take the drug at all. This meant that the drug could benefit some people.         
+       
+Females      
+In these results you can see that the females who took the medication got aids. The medication really didnt effect the women in these results. So the null hypothesis could go either way because you can reject it because the results were odd and thats why I rejected the null hypothesis.        
+         
+LBGT       
+The results came really close so you cant really tell if the medication made a difference/change. Plus we fail to reject the null hypothesis in the LBGT community and the medication dint make a drastic difference in the LBGT community.        
+
+Male     
+The results showed that the drug was effective for the males and I reject the null hypothesis. Less males got aids when they took the drug and males who took the placebo got aids compare to the drug. The drug can help the males stay aids free or less likely to get it.      
